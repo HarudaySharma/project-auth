@@ -28,3 +28,16 @@ app.listen(3000, () => {
 
 app.use("/backend/user/", userRoutes);
 app.use("/backend/auth", authRoutes);
+
+
+// middleware to handle errors
+app.use((err, req, res, next) => {
+    const statusCode = err.statusCode || 500;
+    const message = err.message || "Server Error";
+
+    return res.status(statusCode).json({
+        success: false,
+        message: message,
+        statusCode: statusCode
+    })
+} )
