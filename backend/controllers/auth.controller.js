@@ -42,7 +42,8 @@ export const sign_in = async (req, res, next) => {
 
     //excluding password from rest of the user data to send it to the client
     const {password: hashedPassword, ...rest} = user._doc; 
-
+    rest.success = true;
+    
     res
       .cookie("access_token", token, { httpOnly: true })
       .status(200)

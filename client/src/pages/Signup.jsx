@@ -1,10 +1,12 @@
 import React, { useState } from "react";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
+
 
 function Signup() {
   const [formData, setFormData] = useState({});
   const [error, setError] = useState(0);
   const [loading, setLoading] = useState(false);
+  const navigate = useNavigate();
 
   const handleInputChange = (e) => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
@@ -30,9 +32,9 @@ function Signup() {
         setError(1);
         return;
       }
-      else {
         setError(2);
-      }
+        setTimeout(navigate('/sign_in'), 2000);
+
     } catch (err) {
       setError(true);
       setLoading(false);
@@ -84,7 +86,7 @@ function Signup() {
       </form>
       <div className="flex gap-2">
         <p>Have an account? </p>
-        <Link to="/sign-in">
+        <Link to="/sign_in">
           <span className="text-blue-500">Sign in</span>
         </Link>
       </div>
