@@ -3,7 +3,7 @@ import { Link } from "react-router-dom";
 
 function Signup() {
   const [formData, setFormData] = useState({});
-  const [error, setError] = useState(false);
+  const [error, setError] = useState(0);
   const [loading, setLoading] = useState(false);
 
   const handleInputChange = (e) => {
@@ -15,7 +15,7 @@ function Signup() {
 
     try {
       setLoading(true);
-      const res = await fetch("/backend/auth/signup", {
+      const res = await fetch("/backend/auth/sign_up", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -27,10 +27,12 @@ function Signup() {
       setLoading(false);
       console.log(data);
       if (data.success === false) {
-        setError(true);
+        setError(1);
         return;
       }
-      setError(false);
+      else {
+        setError(2);
+      }
     } catch (err) {
       setError(true);
       setLoading(false);
@@ -86,7 +88,7 @@ function Signup() {
           <span className="text-blue-500">Sign in</span>
         </Link>
       </div>
-      <p className="mt-5 text-red-500">{error && "Something went wrong!"}</p>
+      <p className="mt-5 text-red-500">{error === 1 ? "Something went wrong!" : error === 2 && "user created successfully!"}</p>
     </main>
   );
 }
