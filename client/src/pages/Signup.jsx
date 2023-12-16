@@ -1,13 +1,51 @@
-import React from "react";
+import React, { useState } from "react";
 import { Link } from "react-router-dom";
 
 function Signup() {
+  const [formData, setFormData] = useState({});
+  const [error, setError] = useState(false);
+  const [loading, setLoading] = useState(false);
+
+  const handleInputChange = (e) => {
+    setFormData({ ...formData, [e.target.name]: e.target.value });
+  };
+
+  const handleFormSubmit = async (e) => {
+    e.preventDefault();
+
+    try {
+      setLoading(true);
+      const res = await fetch("/backend/auth/signup", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(formData),
+      });
+
+      const data = await res.json();
+      setLoading(false);
+      console.log(data);
+      if (data.success === false) {
+        setError(true);
+        return;
+      }
+      setError(false);
+    } catch (err) {
+      setError(true);
+      setLoading(false);
+      console.log(err);
+    }
+    
+  };
+  // console.log(formData);
+
   return (
     <main className="max-w-xl mx-auto">
       <h1 className="text-3xl text-center font-semibold my-7">
         Create Account
       </h1>
-      <form action="" method="post" className="flex flex-col gap-4">
+      <form onSubmit={handleFormSubmit} className="flex flex-col gap-4">
         <input
           type="text"
           name="username"
@@ -15,6 +53,7 @@ function Signup() {
           placeholder="username"
           className="p-4 bg-slate-300 rounded-2xl"
           required
+          onChange={handleInputChange}
         />
         <input
           type="email"
@@ -23,6 +62,7 @@ function Signup() {
           placeholder="email"
           className="p-4 bg-slate-300 rounded-2xl"
           required
+          onChange={handleInputChange}
         />
         <input
           type="password"
@@ -30,19 +70,23 @@ function Signup() {
           id="pass"
           placeholder="password"
           className="p-4 bg-slate-300 rounded-2xl"
+          required
+          onChange={handleInputChange}
         />
         <input
           type="submit"
-          value="Submit"
-          className=" py-3 rounded-md text-white  uppercase bg-slate-700 hover:bg-slate-500 hover:cursor-pointer"
+          value={loading ? "Loading..." : "Sign up"}
+          disabled={loading}
+          className=" py-3 rounded-md text-white  uppercase bg-slate-700 hover:bg-slate-500 hover:cursor-pointer disabled:bg-slate-400"
         />
       </form>
       <div className="flex gap-2">
         <p>Have an account? </p>
         <Link to="/sign-in">
-          <span className="text-blue-500"> Sign in</span>
+          <span className="text-blue-500">Sign in</span>
         </Link>
       </div>
+      <p className="mt-5 text-red-500">{error && "Something went wrong!"}</p>
     </main>
   );
 }

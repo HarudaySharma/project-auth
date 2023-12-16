@@ -4,7 +4,7 @@ import { errorHandler } from "../utils/error.js";
 
 export const signup = async (req, res, next) => {
   // creating a new user on post req from the client
-  const { username, email, password } = req.body;
+  const { username, email, password } = req.body; 
   // hashing our pass using bcryptjs
   const hashedPass = bcryptjs.hashSync(password, 13);
   // using our User model
