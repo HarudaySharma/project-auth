@@ -5,30 +5,30 @@ import userRoutes from "./routes/user.route.js";
 import authRoutes from "./routes/auth.route.js";
 
 dotenv.config();
-
 mongoose
-  .connect(process.env.MONGO)
-  .then(() => {
-    console.log("connected to the db");
-  })
-  .catch((msg) => {
-    console.log(msg);
-  });
+    .connect(process.env.MONGO)
+    .then(() => {
+        console.log("connected to the db");
+    })
+    .catch((err) => {
+        console.log(err);
+    });
+
 
 const app = express();
-
+const PORT = 3000;
+//a built-in middleware function.based on body-parser. 
 app.use(express.json());
 
-app.listen(3000, () => {
-  console.log("Server is listening on port:3000");
+
+app.listen(PORT, () => {
+    console.log("Server is listening on port:3000");
 
 });
 
-//to create an api route
-
+//creating api routes for different endpoints
 app.use("/backend/user/", userRoutes);
 app.use("/backend/auth", authRoutes);
-
 
 // middleware to handle errors
 app.use((err, req, res, next) => {
@@ -40,4 +40,4 @@ app.use((err, req, res, next) => {
         message: message,
         statusCode: statusCode
     })
-} )
+})
