@@ -41,9 +41,9 @@ export const sign_in = async (req, res, next) => {
     const token = Jwt.sign({ id: user._id }, process.env.JWT_SECRET);
 
     //excluding password from rest of the user data to send it to the client
-    const {password: hashedPassword, ...rest} = user._doc; 
+    const { password: hashedPassword, ...rest } = user._doc;
     rest.success = true;
-    
+
     res
       .cookie("access_token", token, { httpOnly: true })
       .status(200)
@@ -53,3 +53,56 @@ export const sign_in = async (req, res, next) => {
     next(err);
   }
 };
+
+export const google = async (req, res, next) => {
+  const { name, email, photo } = req.body;
+
+  try {
+    const user = await User.findOne({ email });
+
+    if (!user) {
+      //create new user
+      // 16 character password
+      const generatedPassword =
+        Math.random().toString(36).slice(-8) +
+        Math.random().toString(36).slice(-8);
+      // (36 -> 0-9 && aA-zZ ) && (-8 -> 8 letters from the end)
+      const hashedPassword = bcryptjs.hashSync(generatedPassword, 13);
+      const newUser = new User({
+        username:
+          name.split(' ').join('').toLowerCase() +
+          Math.random().toString(36).slice(-8),
+        email: email,
+        password: hashedPassword,
+        pfp: photo,
+      });
+      await newUser.save();
+      const token = generateToken(newUser._id);
+      const resData = getResponseData(newUser);
+      res
+        .cookie("access_token", token, { httpOnly: true })
+        .status(200)
+        .json(resData);
+      return;
+    }
+
+    const token = generateToken(user._id);
+    const resData = getResponseData(user);
+
+    res
+      .cookie("access_token", token, { httpOnly: true })
+      .status(200)
+      .json(resData);
+  } catch (err) {
+    next(err);
+  }
+};
+
+function generateToken(id) {
+  return Jwt.sign({ id: id }, process.env.JWT_SECRET);
+}
+
+function getResponseData(user) {
+  const { password: hashedPassword, ...rest } = user._doc;
+  return rest;
+}

@@ -6,6 +6,8 @@ import {
   siginInFailure,
 } from "../redux/user/userSlice";
 import { useDispatch, useSelector } from "react-redux";
+import OAuth from "../components/OAuth";
+
 
 function Signin() {
   const [formData, setFormData] = useState({});
@@ -79,6 +81,7 @@ function Signin() {
           disabled={loading}
           className=" py-3 rounded-md text-white  uppercase bg-slate-700 hover:bg-slate-500 hover:cursor-pointer disabled:bg-slate-400"
         />
+        <OAuth />
       </form>
       <div className="flex gap-2">
         <p>Dont have an account? </p>
