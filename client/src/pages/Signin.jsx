@@ -1,12 +1,19 @@
 import React, { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
+import {
+  siginInStart,
+  signInSuccess,
+  siginInFailure,
+} from "../redux/user/userSlice";
+import { useDispatch, useSelector } from "react-redux";
 
 function Signin() {
   const [formData, setFormData] = useState({});
-  const [error, setError] = useState(0);
-  const [loading, setLoading] = useState(false);
+  // const [error, setError] = useState(0);
+  //const [loading, setLoading] = useState(false);
+  const { loading, error } = useSelector((state) => state.user);
   const navigate = useNavigate();
-
+  const dispatch = useDispatch();
 
   const handleInputChange = (e) => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
@@ -16,7 +23,7 @@ function Signin() {
     e.preventDefault();
 
     try {
-      setLoading(true);
+      dispatch(siginInStart());
       const res = await fetch("/backend/auth/sign_in", {
         method: "POST",
         headers: {
@@ -26,30 +33,27 @@ function Signin() {
       });
 
       const data = await res.json();
-      setLoading(false);
 
-      console.log(data.success);
       if (!data.success) {
-        setError(1);
+        // setError(1);
+        dispatch(siginInFailure(1));
         return;
       }
-        setError(2);
-        setTimeout(navigate('/'), 1000);
-
+      dispatch(signInSuccess(data));
+      //setError(2);
+      setTimeout(navigate("/"), 1000);
     } catch (err) {
-      setError(true);
-      setLoading(false);
+      // setError(true);
+      // setLoading(false);
+      dispatch(siginInFailure(err));
       console.log(err);
     }
-    
   };
   // console.log(formData);
 
   return (
     <main className="max-w-xl mx-auto">
-      <h1 className="text-3xl text-center font-semibold my-7">
-        Sign in
-      </h1>
+      <h1 className="text-3xl text-center font-semibold my-7">Sign in</h1>
       <form onSubmit={handleFormSubmit} className="flex flex-col gap-4">
         <input
           type="email"
@@ -82,7 +86,11 @@ function Signin() {
           <span className="text-blue-500">Sign Up</span>
         </Link>
       </div>
-      <p className="mt-5 text-red-500">{error === 1 ? "User not found!" : error === 2 && "logged in successfully!"}</p>
+      <p className="mt-5 text-red-500">
+        {error === 1
+          ? "User not found!"
+          : error === 2 && "logged in successfully!"}
+      </p>
     </main>
   );
 }

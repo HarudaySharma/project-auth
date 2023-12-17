@@ -1,7 +1,6 @@
 import React, { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 
-
 function Signup() {
   const [formData, setFormData] = useState({});
   const [error, setError] = useState(0);
@@ -32,15 +31,13 @@ function Signup() {
         setError(1);
         return;
       }
-        setError(2);
-        setTimeout(navigate('/sign_in'), 2000);
-
+      setError(2);
+      setTimeout(navigate("/sign_in"), 2000);
     } catch (err) {
       setError(true);
       setLoading(false);
       console.log(err);
     }
-    
   };
   // console.log(formData);
 
@@ -90,7 +87,11 @@ function Signup() {
           <span className="text-blue-500">Sign in</span>
         </Link>
       </div>
-      <p className="mt-5 text-red-500">{error === 1 ? "Something went wrong!" : error === 2 && "user created successfully!"}</p>
+      <p className="mt-5 text-red-500">
+        {error === 1
+          ? "Something went wrong!"
+          : error === 2 && "user created successfully!"}
+      </p>
     </main>
   );
 }
