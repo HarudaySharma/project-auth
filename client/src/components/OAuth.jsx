@@ -32,7 +32,7 @@ const OAuth = () => {
     return (
         <button
             type="button"
-            className="bg-red-500 py-3 rounded-md text-white  uppercase bg-slate-700 hover:bg-red-400 hover:cursor-pointer disabled:bg-slate-400"
+            className="bg-red-500 py-3 rounded-md text-white uppercase hover:bg-red-400 hover:cursor-pointer disabled:bg-slate-400"
             onClick={handleButtonClick}
         >
             Proceed with Google
