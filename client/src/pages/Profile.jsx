@@ -1,5 +1,6 @@
 import React, { useState, useRef, useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
+import { updateUserStart, updateUserSuccess, updateUserFailure } from "../redux/user/userSlice";
 import { IoIosEye, IoIosEyeOff } from "react-icons/io";
 import {
   getStorage,
@@ -19,12 +20,14 @@ function Profile() {
   const [formData, setFormData] = useState({});
   const [showPass, setShowPass] = useState(false);
   const [type, setType] = useState("password");
+  const [updateSuccess, setUpdateSuccess] = useState(false);
 
-  const { currentUser } = useSelector((state) => state.user);
+  const { currentUser, loading, error } = useSelector((state) => state.user);
   const dispatch = useDispatch();
 
   // console.log(imageUploadPercent);
 
+  console.log(currentUser)
   useEffect(() => {
     if (image) {
       handleImageUpload(image);
@@ -64,12 +67,41 @@ function Profile() {
     setShowPass((prev) => !prev);
   };
 
-  const handleUpdate = (e) => {};
+  const handleChange = (e) => {
+    setFormData({ ...formData, [e.target.id]: e.target.value });
+
+  }
+
+  console.log(formData);
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    try {
+      dispatch(updateUserStart());
+      const res = await fetch(`/backend/user/update/${currentUser._id}`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(formData)
+      })
+
+      const data = await res.json();
+      if (data.success === false) {
+        dispatch(updateUserFailure(data.message));
+        return
+      }
+      dispatch(updateUserSuccess(data))
+      setUpdateSuccess(true);
+    } catch (err) {
+      console.log(err);
+    }
+
+  };
   return (
     <main className="mt-10 py-8  max-w-2xl flex flex-col mx-auto place-items-center">
       <h1 className="text-3xl font-semibold mb-6">Profile</h1>
       <form
-        action=""
+        onSubmit={handleSubmit}
         className="flex flex-col w-full h-full place-items-center"
       >
         <input
@@ -109,9 +141,10 @@ function Profile() {
           </label>
           <input
             type="text"
-            value={currentUser.username}
-            id="uname"
+            value={formData.username || currentUser.username}
+            id="username"
             className="p-4 min-w-md h-auto bg-slate-300 rounded-2xl hover:bg-slate-200  "
+            onChange={handleChange}
           />
         </fieldset>
         <fieldset className="my-3 flex flex-col w-2/3 ">
@@ -123,9 +156,11 @@ function Profile() {
           </label>
           <input
             type="email"
-            value={currentUser.email}
+            value={formData.email || currentUser.email}
             id="email"
             className="p-4 min-w-md h-auto bg-slate-300 rounded-2xl hover:bg-slate-200  "
+            onChange={handleChange}
+
           />
         </fieldset>
         <fieldset className="my-3 flex flex-col w-2/3 ">
@@ -139,6 +174,8 @@ function Profile() {
             type={type}
             id="password"
             className="relative p-4 min-w-md h-auto bg-slate-300 rounded-2xl hover:bg-slate-200  "
+            onChange={handleChange}
+
           />
           <span
             className="relative left-96 -top-10 w-fit  hover:cursor-pointer"
@@ -149,8 +186,7 @@ function Profile() {
         </fieldset>
         <input
           type="submit"
-          value="update"
-          onClick={handleUpdate}
+          value={loading ? "loading..." : "update"}
           className="p-4 w-2/3  min-w-md h-auto text-white uppercase tracking-wider bg-red-500 rounded-2xl hover:bg-red-400 hover:cursor-pointer"
         />
       </form>
@@ -158,6 +194,8 @@ function Profile() {
         <span className="text-red-700 cursor-pointer">Delete Account</span>
         <span className="text-red-700 cursor-pointer">Sign Out</span>
       </div>
+      {error && <p className="text-red-500  w-2/3 mt-5"> Something went wrong </p>}
+      {updateSuccess && <p className="text-green-500  w-2/3 mt-5"> Updated successfully </p>}
     </main>
   );
 }
