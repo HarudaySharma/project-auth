@@ -1,6 +1,8 @@
 import React, { useState, useRef, useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { updateUserStart, updateUserSuccess, updateUserFailure } from "../redux/user/userSlice";
+import { deleteUserStart, deleteUserSuccess, deleteUserFailure } from "../redux/user/userSlice";
+import { signOut } from "../redux/user/userSlice";
 import { IoIosEye, IoIosEyeOff } from "react-icons/io";
 import {
   getStorage,
@@ -72,6 +74,32 @@ function Profile() {
 
   }
 
+  const handleDeleteAccount = async () => {
+    try {
+      dispatch(deleteUserStart());
+      const res = await fetch(`/backend/user/delete/${currentUser._id}`, {
+        methond: 'DELETE',
+      });
+    
+      const data = await res.json();
+      if(data.sucess === false) {
+        dispatch(deleteUserFailure());
+        return;
+      } 
+      dispatch(deleteUserSuccess());
+    }
+    catch(err) {
+      deleteUserFailure(err);
+    }
+  }
+  const handleSignOut = async (e) =>  {
+    try {
+      await fetch('/backend/auth/sign_out');
+      dispatch(signOut()); 
+    } catch(err) {
+      console.log(err);
+    }
+  }
   console.log(formData);
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -191,8 +219,8 @@ function Profile() {
         />
       </form>
       <div className="w-2/3 flex justify-between mt-5">
-        <span className="text-red-700 cursor-pointer">Delete Account</span>
-        <span className="text-red-700 cursor-pointer">Sign Out</span>
+        <span className="text-red-700 cursor-pointer" onClick={handleDeleteAccount}>Delete Account</span>
+        <span className="text-red-700 cursor-pointer" onClick={handleSignOut}>Sign Out</span>
       </div>
       {error && <p className="text-red-500  w-2/3 mt-5"> Something went wrong </p>}
       {updateSuccess && <p className="text-green-500  w-2/3 mt-5"> Updated successfully </p>}

@@ -106,3 +106,8 @@ function getResponseData(user) {
   const { password: hashedPassword, ...rest } = user._doc;
   return rest;
 }
+
+
+export const sign_out = async (req, res, next) => {
+  res.clearCookie('access_token').status(200).json("Signout success");
+};
