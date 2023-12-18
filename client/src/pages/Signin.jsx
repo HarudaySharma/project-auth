@@ -11,8 +11,7 @@ import OAuth from "../components/OAuth";
 
 function Signin() {
   const [formData, setFormData] = useState({});
-  // const [error, setError] = useState(0);
-  //const [loading, setLoading] = useState(false);
+  const [signedIn, setSignedIn] = useState(null);
   const { loading, error } = useSelector((state) => state.user);
   const navigate = useNavigate();
   const dispatch = useDispatch();
@@ -36,18 +35,18 @@ function Signin() {
 
       const data = await res.json();
 
-      if (!data.success) {
-        // setError(1);
-        dispatch(siginInFailure(1));
+      if (data.success === false) {
+        dispatch( siginInFailure());
+        setSignedIn(false);
         return;
       }
       dispatch(signInSuccess(data));
+      setSignedIn(true);
       //setError(2);
-      setTimeout(navigate("/"), 1000);
+      setTimeout(navigate("/"), 3000);
     } catch (err) {
-      // setError(true);
-      // setLoading(false);
       dispatch(siginInFailure(err));
+      setSignedIn(false);
       console.log(err);
     }
   };
@@ -89,11 +88,8 @@ function Signin() {
           <span className="text-blue-500">Sign Up</span>
         </Link>
       </div>
-      <p className="mt-5 text-red-500">
-        {error === 1
-          ? "User not found!"
-          : error === 2 && "logged in successfully!"}
-      </p>
+      {signedIn && <p className="mt-5 text-green-500">logged in successfully!</p>}
+      {signedIn === false && <p className="mt-5 text-red-500">User not Found!</p>}
     </main>
   );
 }

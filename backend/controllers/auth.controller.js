@@ -9,7 +9,12 @@ export const sign_up = async (req, res, next) => {
   // hashing our pass using bcryptjs
   const hashedPass = bcryptjs.hashSync(password, 13);
   // using our User model
-  const newUser = new User({ username, email: email, password: hashedPass });
+  const newUser = new User(
+    {
+      username,
+      email: email,
+      password: hashedPass
+    });
 
   // checking whether the given data is valid or not in terms of the schema defined
   try {
@@ -19,7 +24,8 @@ export const sign_up = async (req, res, next) => {
       .json({ success: true, message: "User created successfully" });
   } catch (error) {
     //passing control to the next middleware fnc in the stack
-    next(error);
+    console.log(error)
+    next(errorHandler(500, "Username already taken or already have an account"));
 
     // can use custom error handlers to handle any error and show it in the custom format to the user
     //next(errorHandler(300, error.message));

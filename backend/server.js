@@ -35,7 +35,6 @@ app.use("/backend/auth/", authRoutes);
 
 // middleware to handle errors
 app.use((err, req, res) => {
-    console.log("im here")
     const statusCode = err.statusCode || 500;
     const message = err.message || "Server Error";
 

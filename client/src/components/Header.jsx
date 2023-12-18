@@ -4,7 +4,6 @@ import { useSelector } from "react-redux";
 
 export default function Header() {
   const { currentUser } = useSelector((state) => state.user);
-    console.log("this is the user :" + currentUser);
   return (
     <header className="bg-gray-300 flex justify-between items-center max-w-6xl mx-auto p-4">
       <Link to="/">

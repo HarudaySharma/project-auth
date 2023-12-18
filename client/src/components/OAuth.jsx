@@ -26,7 +26,7 @@ const OAuth = () => {
             });
             const data = await res.json();
             dispatch(signInSuccess(data));
-            navigate('/');
+            navigate('/profile');
         } catch (err) {
             console.log("was not able to connect to google", err);
         }

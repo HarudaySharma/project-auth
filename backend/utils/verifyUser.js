@@ -11,7 +11,7 @@ export const verifyToken = (req, res, next) => {
     Jwt.verify(token, process.env.JWT_SECRET, (err, user) => {
         if(err) return next(errorHandler(403, "Token is Not Valid"));
 
-        // adding user to the req just like req,body
+        // adding user to the req just like req.body
         req.user = user;
         next();
 

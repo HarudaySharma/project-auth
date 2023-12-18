@@ -3,7 +3,7 @@ import { Link, useNavigate } from "react-router-dom";
 
 function Signup() {
   const [formData, setFormData] = useState({});
-  const [error, setError] = useState(0);
+  const [error, setError] = useState(null);
   const [loading, setLoading] = useState(false);
   const navigate = useNavigate();
 
@@ -28,15 +28,15 @@ function Signup() {
       setLoading(false);
       console.log(data);
       if (data.success === false) {
-        setError(1);
+        setError(true);
         return;
       }
-      setError(2);
-      setTimeout(navigate("/sign_in"), 2000);
+      setError(false);
+      setTimeout(navigate('/sign_in'), 2000);
     } catch (err) {
+      console.log(err);
       setError(true);
       setLoading(false);
-      console.log(err);
     }
   };
   // console.log(formData);
@@ -88,9 +88,9 @@ function Signup() {
         </Link>
       </div>
       <p className="mt-5 text-red-500">
-        {error === 1
-          ? "Something went wrong!"
-          : error === 2 && "user created successfully!"}
+        {error
+          ? "Input different Username OR Email"
+          :error === false &&  "user created successfully!!"}
       </p>
     </main>
   );

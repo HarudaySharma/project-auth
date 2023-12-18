@@ -11,6 +11,8 @@ import {
   getDownloadURL,
 } from "firebase/storage";
 import { app } from "../firebase";
+import { Navigate } from "react-router-dom";
+
 
 function Profile() {
   const fileRef = useRef(null);
@@ -20,16 +22,19 @@ function Profile() {
   const [imageUploadError, setImageUploadError] = useState(false);
 
   const [formData, setFormData] = useState({});
+
   const [showPass, setShowPass] = useState(false);
   const [type, setType] = useState("password");
+
   const [updateSuccess, setUpdateSuccess] = useState(false);
 
   const { currentUser, loading, error } = useSelector((state) => state.user);
   const dispatch = useDispatch();
-
   // console.log(imageUploadPercent);
 
   console.log(currentUser)
+
+  //image Upload to firebase
   useEffect(() => {
     if (image) {
       handleImageUpload(image);
@@ -63,6 +68,8 @@ function Profile() {
     );
   };
 
+
+  
   const handleToggle = (e) => {
     e.stopPropagation();
     type === "password" ? setType("text") : setType("password");
@@ -78,15 +85,16 @@ function Profile() {
     try {
       dispatch(deleteUserStart());
       const res = await fetch(`/backend/user/delete/${currentUser._id}`, {
-        methond: 'DELETE',
+        method: 'DELETE',
       });
     
       const data = await res.json();
-      if(data.sucess === false) {
+      if(data.success === false) {
         dispatch(deleteUserFailure());
         return;
       } 
       dispatch(deleteUserSuccess());
+      // User deleted successfully
     }
     catch(err) {
       deleteUserFailure(err);
@@ -100,7 +108,8 @@ function Profile() {
       console.log(err);
     }
   }
-  console.log(formData);
+  // console.log("formData" + formData);
+  
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
@@ -222,8 +231,8 @@ function Profile() {
         <span className="text-red-700 cursor-pointer" onClick={handleDeleteAccount}>Delete Account</span>
         <span className="text-red-700 cursor-pointer" onClick={handleSignOut}>Sign Out</span>
       </div>
-      {error && <p className="text-red-500  w-2/3 mt-5"> Something went wrong </p>}
-      {updateSuccess && <p className="text-green-500  w-2/3 mt-5"> Updated successfully </p>}
+      {error && <p className="text-red-500  w-2/3 mt-5"> Something went wrong!!</p>}
+      {updateSuccess && <p className="text-green-500  w-2/3 mt-5"> Updated successfully!</p>}
     </main>
   );
 }
