@@ -1,14 +1,18 @@
 import { GoogleAuthProvider, signInWithPopup, getAuth } from "firebase/auth";
 import { app } from "../firebase.js";
-import { useDispatch } from "react-redux";
+import { useSelector, useDispatch } from "react-redux";
 import {useNavigate} from 'react-router-dom'
-import { signInSuccess } from "../redux/user/userSlice";
+import { siginInFailure, siginInStart, signInSuccess } from "../redux/user/userSlice";
+import Button from "./Button.jsx";
 
 const OAuth = () => {
+    const {loading} = useSelector(state => state.user)
     const dispatch = useDispatch();
     const navigate = useNavigate();
-    const handleButtonClick = async () => {
+    const handleButtonClick = async (e) => {
+        
         try {
+            dispatch(siginInStart());
             const provider = new GoogleAuthProvider();
             const auth = getAuth(app);
 
@@ -29,17 +33,14 @@ const OAuth = () => {
             navigate('/profile');
         } catch (err) {
             console.log("was not able to connect to google", err);
+            dispatch(siginInFailure())
         }
-    };
-
+    };   
     return (
-        <button
-            type="button"
-            className="bg-red-500 py-3 rounded-md text-white uppercase hover:bg-red-400 hover:cursor-pointer disabled:bg-slate-400"
-            onClick={handleButtonClick}
-        >
-            Proceed with Google
-        </button>
+        <Button formBtn={false} type="button" value={loading ? 'loading...' : `Proceed with Google`} handleButtonClick={handleButtonClick} disabled={loading}
+        className={`mb-5 p-4 bg-google-btn text-white outline outline-2 outline-black uppercase tracking-widest hover:bg-google-btn-hover hover:text-black hover:relative hover:left-4 hover:shadow-2xl disabled:bg-slate-400`}
+        />
+
     );
 };
 

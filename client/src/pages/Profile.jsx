@@ -1,4 +1,4 @@
-import React, { useState, useRef, useEffect } from "react";
+import React, { useState, useRef, useEffect, useCallback } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { updateUserStart, updateUserSuccess, updateUserFailure } from "../redux/user/userSlice";
 import { deleteUserStart, deleteUserSuccess, deleteUserFailure } from "../redux/user/userSlice";
@@ -11,7 +11,7 @@ import {
   getDownloadURL,
 } from "firebase/storage";
 import { app } from "../firebase";
-import { Navigate } from "react-router-dom";
+import { InputBox, Button} from "../components";
 
 
 function Profile() {
@@ -76,10 +76,10 @@ function Profile() {
     setShowPass((prev) => !prev);
   };
 
-  const handleChange = (e) => {
+  const handleChange = useCallback((e) => {
     setFormData({ ...formData, [e.target.id]: e.target.value });
+  },[formData]);
 
-  }
 
   const handleDeleteAccount = async () => {
     try {
@@ -135,12 +135,14 @@ function Profile() {
 
   };
   return (
-    <main className="mt-10 py-8  max-w-2xl flex flex-col mx-auto place-items-center">
-      <h1 className="text-3xl font-semibold mb-6">Profile</h1>
+    <main className="shadow-2xl bg-box-color border-black p-8 my-32 mx-auto border-2 max-w-2xl font-mono">
+
+      <h1 className="text-3xl text-center  font-semibold my-7 uppercase tracking-widest ">Profile</h1>
       <form
         onSubmit={handleSubmit}
-        className="flex flex-col w-full h-full place-items-center"
+        className="flex flex-col gap-4 flex-wrap"
       >
+        <section className="self-center">
         <input
           type="file"
           ref={fileRef}
@@ -151,12 +153,12 @@ function Profile() {
         <img
           src={formData.pfp || currentUser.pfp}
           alt="user image"
-          className="w-44 h-44 rounded-full cursor-pointer"
+          className="outline outline-offset-4 shadow-2xl w-48 h-48 rounded-full cursor-pointer hover:w-52 hover:h-52 hover:shadow-amber-800"
           onClick={() => fileRef.current.click()}
         />
-        <p>
+        <p className="mt-4">
           {imageUploadError ? (
-            <span className="text-red-700">
+            <span className="text-red-700 ">
               Error uploading (image size should be less than 2mb)
             </span>
           ) : imageUploadPercent > 0 && imageUploadPercent < 100 ? (
@@ -169,67 +171,28 @@ function Profile() {
             ""
           )}
         </p>
-        <fieldset className="my-3 flex flex-col w-2/3 ">
-          <label
-            htmlFor="uname"
-            className="px-2 uppercase text-sm tracking-wider"
-          >
-            username
-          </label>
-          <input
-            type="text"
-            value={formData.username || currentUser.username}
-            id="username"
-            className="p-4 min-w-md h-auto bg-slate-300 rounded-2xl hover:bg-slate-200  "
-            onChange={handleChange}
-          />
-        </fieldset>
-        <fieldset className="my-3 flex flex-col w-2/3 ">
-          <label
-            htmlFor="email"
-            className="px-2 uppercase text-sm tracking-wider"
-          >
-            email
-          </label>
-          <input
-            type="email"
-            value={formData.email || currentUser.email}
-            id="email"
-            className="p-4 min-w-md h-auto bg-slate-300 rounded-2xl hover:bg-slate-200  "
-            onChange={handleChange}
+        </section>
 
-          />
-        </fieldset>
-        <fieldset className="my-3 flex flex-col w-2/3 ">
-          <label
-            htmlFor="password"
-            className="px-2 uppercase text-sm tracking-wider"
-          >
-            password
-          </label>
-          <input
-            type={type}
-            id="password"
-            className="relative p-4 min-w-md h-auto bg-slate-300 rounded-2xl hover:bg-slate-200  "
-            onChange={handleChange}
+        <InputBox labelText="username" type="text" name="username" id="username" value={formData.username || currentUser.username}
+         required={true} handleInputChange={handleChange}/>
 
-          />
+        <InputBox labelText="e-mail" type="email" name="email" id="email" value={formData.email || currentUser.email} required={true} handleInputChange={handleChange} />
+
+        <InputBox labelText="password" type={type} name="password" id="pass" required={false} handleInputChange={handleChange} className={`relative`} >
           <span
-            className="relative left-96 -top-10 w-fit  hover:cursor-pointer"
+            className=" w-fit relative  left-full bottom-11 -mx-10 hover:cursor-pointer "
             onClick={handleToggle}
           >
             {showPass ? <IoIosEye size={25} /> : <IoIosEyeOff size={25} />}
           </span>
-        </fieldset>
-        <input
-          type="submit"
-          value={loading ? "loading..." : "update"}
-          className="p-4 w-2/3  min-w-md h-auto text-white uppercase tracking-wider bg-red-500 rounded-2xl hover:bg-red-400 hover:cursor-pointer"
+          </InputBox>
+          <Button formBtn={true} type="submit" value={loading ? "Loading..." : "update"} disabled={loading}
+          className={` my-5 bg-inherit p-4 bg-surround outline outline-2 uppercase tracking-widest hover:bg-surround-hover  hover:relative hover:left-4 hover:shadow-2xl disabled:bg-slate-400`}
         />
       </form>
-      <div className="w-2/3 flex justify-between mt-5">
-        <span className="text-red-700 cursor-pointer" onClick={handleDeleteAccount}>Delete Account</span>
-        <span className="text-red-700 cursor-pointer" onClick={handleSignOut}>Sign Out</span>
+      <div className="flex justify-between flex-wrap">
+        <span className="text-red-700 cursor-pointer hover:text-blue-600" onClick={handleDeleteAccount}>Delete Account</span>
+        <span className="text-red-700 cursor-pointer hover:text-blue-600" onClick={handleSignOut}>Sign Out</span>
       </div>
       {error && <p className="text-red-500  w-2/3 mt-5"> Something went wrong!!</p>}
       {updateSuccess && <p className="text-green-500  w-2/3 mt-5"> Updated successfully!</p>}
