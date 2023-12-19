@@ -5,7 +5,7 @@ function About() {
     <main className="bg-box-color p-8 rounded-3xl max-w-7xl flex flex-col gap-8 mx-auto mt-24 font-mono">
       <section className="flex flex-col gap-4 ">
       <h1 className="uppercase text-3xl mb-2 font-extrabold tracking-widest text-center">About Me!</h1>
-      <p>Hello there! I'm Haruday, a 2nd-year Computer Science undergraduate who started exploring the world of backend engineering during my winter holidays. It was during this time that I conceptualized and developed the Authentication Web App.</p>
+      <p>Hello there! I'm Haruday, a 2nd-year Computer Science undergraduate (Year-2023) who started exploring the world of backend engineering during my winter holidays. It was during this time that I conceptualized and developed the Authentication Web App.</p>
       <p>The project was crafted using a set of powerful tools and frameworks, each chosen with a specific purpose in mind:</p>
       </section>
       <section className="hover:bg-slate-200 hover:p-4">

@@ -32,6 +32,17 @@ export const sign_up = async (req, res, next) => {
   }
 };
 
+
+function generateToken(id) {
+  return Jwt.sign({ id: id }, process.env.JWT_SECRET);
+}
+
+function getResponseData(user) {
+  const { password: hashedPassword, ...rest } = user._doc;
+  return rest;
+}
+
+
 export const sign_in = async (req, res, next) => {
   // finding the login credentials
   const { email, password } = req.body;
@@ -44,16 +55,16 @@ export const sign_in = async (req, res, next) => {
     if (!isPassValid) return next(errorHandler(401, "wrong credentials"));
 
     //creating a sign in cookie
-    const token = Jwt.sign({ id: user._id }, process.env.JWT_SECRET);
+    const token = generateToken(user._id)
 
     //excluding password from rest of the user data to send it to the client
-    const { password: hashedPassword, ...rest } = user._doc;
-    rest.success = true;
+    const resData = getResponseData(user);
+    resData.success = true;
 
     res
       .cookie('access_token', token, { httpOnly: true })
       .status(200)
-      .json(rest);
+      .json(resData);
   } catch (err) {
     console.log(err);
     next(err);
@@ -104,14 +115,6 @@ export const google = async (req, res, next) => {
   }
 };
 
-function generateToken(id) {
-  return Jwt.sign({ id: id }, process.env.JWT_SECRET);
-}
-
-function getResponseData(user) {
-  const { password: hashedPassword, ...rest } = user._doc;
-  return rest;
-}
 
 
 export const sign_out = async (req, res, next) => {

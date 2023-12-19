@@ -31,8 +31,7 @@ function Profile() {
   const { currentUser, loading, error } = useSelector((state) => state.user);
   const dispatch = useDispatch();
   // console.log(imageUploadPercent);
-
-  console.log(currentUser)
+  // console.log(currentUser)
 
   //image Upload to firebase
   useEffect(() => {
@@ -114,6 +113,7 @@ function Profile() {
     e.preventDefault();
     try {
       dispatch(updateUserStart());
+      console.log(formData);
       const res = await fetch(`/backend/user/update/${currentUser._id}`, {
         method: 'POST',
         headers: {
@@ -178,7 +178,7 @@ function Profile() {
 
         <InputBox labelText="e-mail" type="email" name="email" id="email" value={formData.email || currentUser.email} required={true} handleInputChange={handleChange} />
 
-        <InputBox labelText="password" type={type} name="password" id="pass" required={false} handleInputChange={handleChange} className={`relative`} >
+        <InputBox labelText="password" type={type} name="password" id="password" required={false} handleInputChange={handleChange} className={`relative`} >
           <span
             className=" w-fit relative  left-full bottom-11 -mx-10 hover:cursor-pointer "
             onClick={handleToggle}

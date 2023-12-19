@@ -2,7 +2,7 @@ import User from "../models/user.model.js";
 import { errorHandler } from "../utils/error.js"
 import bcryptjs from 'bcryptjs'
 
-export const user = (req, res) => {
+export const test = (req, res) => {
     res.json(
         {
             message: "API working",
@@ -35,6 +35,7 @@ export const updateUser = async (req, res, next) => {
             },
             { new: true }
         );
+        console.log("Updated user: " + updatedUser._doc)
         const { password, ...rest } = updatedUser._doc;
         res.status(200).json(rest);
 
