@@ -4,6 +4,7 @@ import dotenv from "dotenv";
 import cookieParser from "cookie-parser";
 import userRoutes from "./routes/user.route.js";
 import authRoutes from "./routes/auth.route.js";
+import path from 'path';
 
 dotenv.config();
 mongoose
@@ -16,8 +17,17 @@ mongoose
     });
 
 
+const __dirname = path.resolve();
+
 const app = express();
 const PORT = 3000;
+
+
+app.use(express.static(path.join(__dirname, 'client/dist')));
+
+app.get('*', (req, res) => {
+    res.sendFile(path.join(__dirname, 'client', 'dist', 'index.html'));
+})
 
 //a built-in middleware function.based on body-parser. 
 app.use(express.json());
