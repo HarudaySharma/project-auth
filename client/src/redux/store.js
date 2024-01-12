@@ -4,20 +4,25 @@ import { persistReducer } from "redux-persist";
 import storage from "redux-persist/lib/storage";
 import persistStore from "redux-persist/es/persistStore";
 
-const rootReducer = combineReducers({ user: userReducer });
 
 // using redux persist to save the data across different loads
 // i think it use local storage
 const persistConfig = {
-  key: "root",
+  key: "user",
   version: 1,
   storage,
 };
 
-const persistedReducer = persistReducer(persistConfig, rootReducer);
+const persistedUserReducer = persistReducer(persistConfig, userReducer);
+
+
+const rootReducer = ({
+  user: persistedUserReducer,
+})
+
 
 export const store = configureStore({
-  reducer: persistedReducer,
+  reducer: rootReducer,
   middleware: (getDefaultMiddleware) =>
     getDefaultMiddleware({
       serializableCheck: false,

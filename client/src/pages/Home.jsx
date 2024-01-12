@@ -4,9 +4,9 @@ import React from "react"
 
 function Home() {
   return (
-    <main className=" max-w-7xl flex gap-16 mx-auto mt-24 font-mono">
+    <main className="flex flex-col max-w-7xl laptop:flex-row gap-16 mx-auto mt-24 font-mono">
       <h1 className="uppercase text-3xl font-extrabold place-self-center p-4 tracking-widest text-center">Welcome to the Authentication Web App!</h1>
-      <section className="bg-surround rounded-lg p-4 flex flex-col gap-8 ">
+      <section className="bg-surround rounded-lg p-4 flex flex-col gap-8  mx-2 laptop:mx-0">
         <p className="text-xl font-bold place-self-center uppercase tracking-wide">Secure your online experience with our simple and efficient Authentication Web App. Take control of your account with the following features:</p>
         <ul className="flex flex-col gap-4 ">
           <li className="text-justify hover:text-lg"><span className="text-2xl underline text-slate-700 block hover:text-3xl hover:text-slate-900 hover:shadow-slate-500 mb-2">Sign Up:</span> Create a new account to establish your presence in our community.</li>

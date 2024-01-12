@@ -6,6 +6,11 @@ export default {
   ],
   theme: {
     extend: {
+        screens: {
+            'laptop': '1024px',
+            'mobile': '480px',
+
+        },
       backgroundColor: {
         'box-color' : '#ced4da',
         'google-btn' : "#fa5252",
