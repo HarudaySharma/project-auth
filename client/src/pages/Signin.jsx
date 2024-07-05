@@ -9,6 +9,9 @@ import { useDispatch, useSelector } from "react-redux";
 import { IoIosEye, IoIosEyeOff } from "react-icons/io";
 import { InputBox, Button, OAuth } from "../components";
 
+const API_URL = import.meta.env.VITE_API_URL;
+
+
 function Signin() {
   const [formData, setFormData] = useState({});
   const [signedIn, setSignedIn] = useState(null);
@@ -33,12 +36,13 @@ function Signin() {
 
     try {
       dispatch(siginInStart());
-      const res = await fetch("/backend/auth/sign_in", {
+      const res = await fetch(`${API_URL}/backend/auth/sign_in`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
         },
         body: JSON.stringify(formData),
+        credentials: 'include',
       });
 
       const data = await res.json();

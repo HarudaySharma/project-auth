@@ -3,6 +3,8 @@ import { Link, useNavigate } from "react-router-dom";
 import { InputBox, Button } from "../components";
 import { IoIosEye, IoIosEyeOff } from "react-icons/io";
 
+const API_URL = import.meta.env.VITE_API_URL;
+
 
 function Signup() {
   const [formData, setFormData] = useState({});
@@ -28,12 +30,13 @@ function Signup() {
 
     try {
       setLoading(true);
-      const res = await fetch("/backend/auth/sign_up", {
+      const res = await fetch(`${API_URL}/backend/auth/sign_up`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
         },
         body: JSON.stringify(formData),
+        credentials: 'include',
       });
 
       const data = await res.json();

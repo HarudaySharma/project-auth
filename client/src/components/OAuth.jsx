@@ -5,6 +5,9 @@ import {useNavigate} from 'react-router-dom'
 import { siginInFailure, siginInStart, signInSuccess } from "../redux/user/userSlice";
 import Button from "./Button.jsx";
 
+const API_URL = import.meta.env.VITE_API_URL;
+
+
 const OAuth = () => {
     const {loading} = useSelector(state => state.user)
     const dispatch = useDispatch();
@@ -17,7 +20,7 @@ const OAuth = () => {
             const auth = getAuth(app);
 
             const result = await signInWithPopup(auth, provider);
-            const res = await fetch("/backend/auth/google", {
+            const res = await fetch(`${API_URL}/backend/auth/google`, {
                 method: "POST",
                 headers: {
                     "Content-Type": "application/json",
@@ -27,6 +30,7 @@ const OAuth = () => {
                     email: result.user.email,
                     photo: result.user.photoURL,
                 }),
+                credentials: 'include',
             });
             const data = await res.json();
             dispatch(signInSuccess(data));

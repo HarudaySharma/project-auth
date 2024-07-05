@@ -13,6 +13,8 @@ import {
 import { app } from "../firebase";
 import { InputBox, Button} from "../components";
 
+const API_URL = import.meta.env.VITE_API_URL;
+
 
 function Profile() {
   const fileRef = useRef(null);
@@ -83,8 +85,9 @@ function Profile() {
   const handleDeleteAccount = async () => {
     try {
       dispatch(deleteUserStart());
-      const res = await fetch(`/backend/user/delete/${currentUser._id}`, {
+      const res = await fetch(`${API_URL}/backend/user/delete/${currentUser._id}`, {
         method: 'DELETE',
+        credentials: 'include',
       });
     
       const data = await res.json();
@@ -101,7 +104,9 @@ function Profile() {
   }
   const handleSignOut = async (e) =>  {
     try {
-      await fetch('/backend/auth/sign_out');
+      await fetch(`${API_URL}/backend/auth/sign_out`, {
+          credentials: true,
+      });
       dispatch(signOut()); 
     } catch(err) {
       console.log(err);
@@ -114,12 +119,13 @@ function Profile() {
     try {
       dispatch(updateUserStart());
       console.log(formData);
-      const res = await fetch(`/backend/user/update/${currentUser._id}`, {
+      const res = await fetch(`${API_URL}/backend/user/update/${currentUser._id}`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
         },
-        body: JSON.stringify(formData)
+        body: JSON.stringify(formData),
+        credentials: true,
       })
 
       const data = await res.json();

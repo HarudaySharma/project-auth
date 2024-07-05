@@ -4,7 +4,7 @@ import dotenv from "dotenv";
 import cookieParser from "cookie-parser";
 import userRoutes from "./routes/user.route.js";
 import authRoutes from "./routes/auth.route.js";
-import path from 'path';
+import cors from 'cors'
 
 dotenv.config();
 mongoose
@@ -16,28 +16,38 @@ mongoose
         console.log(err);
     });
 
-
-const __dirname = path.resolve();
-
 const app = express();
 const PORT = 3000;
-
-
-app.use(express.static(path.join(__dirname, 'client/dist')));
-
-app.get('*', (req, res) => {
-    res.sendFile(path.join(__dirname, 'client', 'dist', 'index.html'));
-})
 
 //a built-in middleware function.based on body-parser. 
 app.use(express.json());
 
 app.use(cookieParser());
 
+app.use(cors({
+    credentials: true,
+    origin: `${process.env.WEB_CLIENT_URL}`,
+    methods: ['GET', 'POST', 'PUT', 'OPTIONS'],
+    allowedHeaders: ['Content-Type', 'Authorization'], // Include allowed headers
+}));
+
+// middleware to handle preflight requests
+app.options('*', cors({
+    credentials: true,
+    origin: `${process.env.WEB_CLIENT_URL}`,
+    methods: ['GET', 'POST', 'PUT', 'OPTIONS'],
+    allowedHeaders: ['Content-Type', 'Authorization'],
+}));
+
+
 app.listen(PORT, () => {
     console.log("Server is listening on port:3000");
 
 });
+
+app.get("/", (_, res) => {
+    res.json({status: "server running"});
+})
 
 //creating api routes for different endpoints
 app.use("/backend/user/", userRoutes);
