@@ -62,7 +62,11 @@ export const sign_in = async (req, res, next) => {
     resData.success = true;
 
     res
-      .cookie('access_token', token, { httpOnly: true })
+      .cookie('access_token', token, {
+          maxAge: 1000 * 60 * 60 * 2,
+          secure: true,
+          sameSite: 'none',
+      })
       .status(200)
       .json(resData);
   } catch (err) {
@@ -97,7 +101,11 @@ export const google = async (req, res, next) => {
       const token = generateToken(newUser._id);
       const resData = getResponseData(newUser);
       res
-        .cookie("access_token", token, { httpOnly: true })
+        .cookie('access_token', token, {
+            maxAge: 1000 * 60 * 60 * 2,
+            secure: true,
+            sameSite: 'none',
+        })
         .status(200)
         .json(resData);
       return;
@@ -107,7 +115,11 @@ export const google = async (req, res, next) => {
     const resData = getResponseData(user);
 
     res
-      .cookie("access_token", token, { httpOnly: true })
+       .cookie('access_token', token, {
+           maxAge: 1000 * 60 * 60 * 2,
+           secure: true,
+           sameSite: 'none',
+       })
       .status(200)
       .json(resData);
   } catch (err) {
