@@ -105,7 +105,7 @@ function Profile() {
   const handleSignOut = async (e) =>  {
     try {
       await fetch(`${API_URL}/backend/auth/sign_out`, {
-          credentials: true,
+          credentials: 'include',
       });
       dispatch(signOut()); 
     } catch(err) {
@@ -125,7 +125,7 @@ function Profile() {
           'Content-Type': 'application/json',
         },
         body: JSON.stringify(formData),
-        credentials: true,
+        credentials: 'include',
       })
 
       const data = await res.json();

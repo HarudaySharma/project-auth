@@ -27,7 +27,7 @@ app.use(cookieParser());
 app.use(cors({
     credentials: true,
     origin: `${process.env.WEB_CLIENT_URL}`,
-    methods: ['GET', 'POST', 'PUT', 'OPTIONS'],
+    methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
     allowedHeaders: ['Content-Type', 'Authorization'], // Include allowed headers
 }));
 
@@ -35,7 +35,7 @@ app.use(cors({
 app.options('*', cors({
     credentials: true,
     origin: `${process.env.WEB_CLIENT_URL}`,
-    methods: ['GET', 'POST', 'PUT', 'OPTIONS'],
+    methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
     allowedHeaders: ['Content-Type', 'Authorization'],
 }));
 
